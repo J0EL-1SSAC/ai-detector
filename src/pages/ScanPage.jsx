@@ -51,16 +51,20 @@ export default function ScanPage({ scanMode, onBack, user, onUpdateUser }) {
   const [confidenceMap, setConfidenceMap] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [progress, setProgress] = useState('');
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
 
   const handleFileSelect = useCallback(async (file) => {
     setIsAnalyzing(true);
     setResults(null);
     setConfidenceMap(null);
     setImageUrl(null);
+    setUploadedFile(file);
 
     try {
       setProgress('Loading file...');
       const { imageData, width, height, imageUrl: url } = await loadImagePixels(file);
+      setImageDimensions({ width, height });
       if (url) setImageUrl(url);
 
       let analyses = [];
@@ -223,6 +227,8 @@ export default function ScanPage({ scanMode, onBack, user, onUpdateUser }) {
     setResults(null);
     setConfidenceMap(null);
     setImageUrl(null);
+    setUploadedFile(null);
+    setImageDimensions({ width: 0, height: 0 });
   }, []);
 
   const getModeTitle = () => {
@@ -295,6 +301,10 @@ export default function ScanPage({ scanMode, onBack, user, onUpdateUser }) {
                 confidenceMap={confidenceMap}
                 imageUrl={imageUrl}
                 onReset={handleReset}
+                file={uploadedFile}
+                user={user}
+                imageWidth={imageDimensions.width}
+                imageHeight={imageDimensions.height}
               />
             </motion.div>
           )}

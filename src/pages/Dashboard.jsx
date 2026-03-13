@@ -9,30 +9,6 @@ import {
 
 const FEATURE_CARDS = [
   {
-    id: 'scan',
-    icon: Scan,
-    title: 'Full Forensic Scan',
-    desc: 'Metadata, watermarks, model artifacts, confidence mapping, timeline analysis',
-    color: '#8b5cf6',
-    badge: 'Core'
-  },
-  {
-    id: 'ela',
-    icon: FlaskConical,
-    title: 'Error Level Analysis',
-    desc: 'Detect manipulation through JPEG compression artifact visualization',
-    color: '#ef4444',
-    badge: 'Advanced'
-  },
-  {
-    id: 'prnu',
-    icon: Radio,
-    title: 'PRNU Sensor Analysis',
-    desc: 'Camera sensor fingerprint verification — missing PRNU = synthetic',
-    color: '#06b6d4',
-    badge: 'Unique'
-  },
-  {
     id: 'benford',
     icon: BarChart3,
     title: "Benford's Law Check",
@@ -46,30 +22,6 @@ const FEATURE_CARDS = [
     title: 'GAN Fingerprint Decoder',
     desc: 'Identify specific GAN architectures from spectral signatures',
     color: '#f59e0b',
-    badge: 'Unique'
-  },
-  {
-    id: 'ghost',
-    icon: Eye,
-    title: 'Compression Ghost',
-    desc: 'Detect repeated JPEG re-compression traces across quality levels',
-    color: '#ec4899',
-    badge: 'Advanced'
-  },
-  {
-    id: 'batch',
-    icon: Layers,
-    title: 'Batch Analysis',
-    desc: 'Analyze up to 20 files simultaneously with comparative insights',
-    color: '#a855f7',
-    badge: 'Pro'
-  },
-  {
-    id: 'threat',
-    icon: AlertTriangle,
-    title: 'Threat Intelligence',
-    desc: 'Hash-based lookup against known deepfake and AI content databases',
-    color: '#f97316',
     badge: 'Unique'
   }
 ];

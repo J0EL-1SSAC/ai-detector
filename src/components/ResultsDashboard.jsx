@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldAlert, ShieldCheck, ShieldQuestion, RotateCcw } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, ShieldQuestion, RotateCcw, Download, FileText, Loader } from 'lucide-react';
 import AnalysisCard from './AnalysisCard';
 import ConfidenceMap from './ConfidenceMap';
 import CrossModelChart from './CrossModelChart';
 import Timeline from './Timeline';
+import { generateForensicReport } from '../engine/reportGenerator';
 
 function getOverallVerdict(score) {
   if (score >= 70) return { label: 'Likely AI-Generated', icon: ShieldAlert, className: 'verdict-danger' };
@@ -18,8 +19,9 @@ function getOverallColor(score) {
   return 'var(--success)';
 }
 
-export default function ResultsDashboard({ results, confidenceMap, imageUrl, onReset }) {
+export default function ResultsDashboard({ results, confidenceMap, imageUrl, onReset, file, user, imageWidth, imageHeight }) {
   const [expandedCards, setExpandedCards] = useState(new Set([0]));
+  const [isGenerating, setIsGenerating] = useState(false);
 
   if (!results) return null;
 
@@ -36,6 +38,25 @@ export default function ResultsDashboard({ results, confidenceMap, imageUrl, onR
       return next;
     });
   };
+
+  const handleDownloadReport = useCallback(async () => {
+    if (!file || isGenerating) return;
+    setIsGenerating(true);
+    try {
+      await generateForensicReport({
+        file,
+        results,
+        user,
+        imageUrl,
+        imageWidth,
+        imageHeight,
+      });
+    } catch (err) {
+      console.error('Report generation failed:', err);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [file, results, user, imageUrl, imageWidth, imageHeight, isGenerating]);
 
   return (
     <motion.div
@@ -95,10 +116,30 @@ export default function ResultsDashboard({ results, confidenceMap, imageUrl, onR
           <p className="verdict-description">
             Based on analysis of metadata, watermarks, model artifacts, confidence mapping, cross-model signatures, and timeline forensics.
           </p>
-          <button className="reset-btn" onClick={onReset} id="analyze-new-btn">
-            <RotateCcw size={16} />
-            Analyze Another File
-          </button>
+          <div className="verdict-actions">
+            <button className="reset-btn" onClick={onReset} id="analyze-new-btn">
+              <RotateCcw size={16} />
+              Analyze Another File
+            </button>
+            <button
+              className="download-report-btn"
+              onClick={handleDownloadReport}
+              disabled={isGenerating}
+              id="download-report-btn"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader size={16} className="btn-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <FileText size={16} />
+                  Download Forensic Report
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </motion.div>
 
